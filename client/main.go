@@ -33,8 +33,8 @@ func main() {
 		fmt.Fprintln(chatview, ">>>", messages[len(messages)-1])
 		textbox.SetText("")
 	})
-
 	chatlayout := tview.NewFlex().AddItem(chatview, 0, 1, true).AddItem(messagebar, 1, 1, true).SetDirection(tview.FlexRow)
+
 	app := tview.NewApplication().SetRoot(chatlayout, true)
 	app.EnableMouse(true)
 	err := app.Run()

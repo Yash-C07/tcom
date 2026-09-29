@@ -12,6 +12,8 @@ services:
       - tcomdata:/var/lib/postgres/data
     ports:
       - 5432:5432
+  # postgres://postgres:postgres@db:5432/tcom-db
+  
 
 volumes:
   tcomdata:
