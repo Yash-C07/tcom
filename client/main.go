@@ -7,8 +7,15 @@ import (
 	"github.com/rivo/tview"
 )
 
+
+type User struct {
+	username string
+
+}
+
 func main() {
 	var messages []string = make([]string, 0)
+	var isLoggedin bool = false
 	// box := tview.NewBox().SetBorder(true).SetBackgroundColor(tcell.ColorGrey).SetTitle(" Home ")
 	textbox := tview.NewInputField().SetPlaceholder("type something...")
 	textbox.SetFieldBackgroundColor(tcell.ColorRed)
@@ -34,8 +41,16 @@ func main() {
 		textbox.SetText("")
 	})
 	chatlayout := tview.NewFlex().AddItem(chatview, 0, 1, true).AddItem(messagebar, 1, 1, true).SetDirection(tview.FlexRow)
+	loginLayout := tview.NewFlex()
 
-	app := tview.NewApplication().SetRoot(chatlayout, true)
+	currentPage := loginLayout
+
+	if isLoggedin {
+		currentPage = chatlayout
+	}
+
+
+	app := tview.NewApplication().SetRoot(currentPage, true)
 	app.EnableMouse(true)
 	err := app.Run()
 	if err != nil {
