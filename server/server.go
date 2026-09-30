@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"context"
@@ -59,8 +59,10 @@ func loginHandler(writer http.ResponseWriter, reqptr *http.Request) {
 
 	if u.Username == "" && u.Password == "" {
 		fmt.Println("Login Failed. Try again")
+		writer.WriteHeader(http.StatusForbidden)
 	} else {
 		fmt.Println("Login Success " + u.Username)
+		writer.WriteHeader(http.StatusOK)
 	}
 
 	fmt.Println(u)
@@ -82,8 +84,10 @@ func registerHandler(writer http.ResponseWriter, reqptr *http.Request) {
 		"INSERT INTO users (username, password) VALUES ($1, $2)", registerReq.Username, registerReq.Password)
 	if err != nil {
 		fmt.Println("Registration Unsuccessful Error: ", err)
+		writer.WriteHeader(http.StatusForbidden)
 		return
 	}
 	fmt.Println("Registered successfully! Welcome ", registerReq.Username)
+	writer.WriteHeader(http.StatusOK)
 
 }
