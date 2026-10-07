@@ -2,15 +2,15 @@ package views
 
 import (
 	"tcom/api"
-	"tcom/types"
+	"tcom/models"
 
 	"net/http"
 
 	"github.com/rivo/tview"
 )
 
-var loginReq types.LoginModel
-var registerReq types.RegisterModel
+var loginReq models.LoginModel
+var registerReq models.RegisterModel
 
 func GetAuthPage(pages *tview.Pages) *tview.Flex {
 	page := tview.NewFlex().SetDirection(tview.FlexRow)
@@ -52,9 +52,10 @@ func GetAuthPage(pages *tview.Pages) *tview.Flex {
 		}).
 		AddInputField("Password", "", 0, nil, func(text string) {
 			registerReq.Password = text
-		}).
-		AddInputField("Confirm password", "", 0, nil, func(text string) {
 			registerReq.ConfirmPassword = text
+		}).
+		AddInputField("Display Name", "", 0, nil, func(text string) {
+			registerReq.DisplayName = text
 		}).
 		AddButton("Sign up", func() {
 			var statuscode int

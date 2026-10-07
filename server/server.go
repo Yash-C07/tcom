@@ -17,6 +17,7 @@ func main() {
 	http.HandleFunc("/friend-remove", handler.RemoveFriend)
 	http.HandleFunc("/friend-accept", handler.AcceptFriendReq)
 	http.HandleFunc("/friend-reject", handler.RejectFriendReq)
+	http.HandleFunc("/get-friend-reqs", handler.GetFriendReqs)
 
 	err := http.ListenAndServe(":3000", nil)
 	if err != nil {

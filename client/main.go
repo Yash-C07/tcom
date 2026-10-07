@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"tcom/types"
+	"tcom/models"
 	"tcom/views"
 
 	"github.com/rivo/tview"
 )
 
-var loginReq types.LoginModel
+var loginReq models.LoginModel
 var isLoggedin bool = false
 
 func main() {
@@ -29,7 +29,3 @@ func main() {
 		return
 	}
 }
-
-//checking my git
-//AGAIN
-//REAGIN

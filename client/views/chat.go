@@ -45,6 +45,8 @@ func GetChatPage() *tview.Flex {
 		AddItem("Yashwanth", "yash16", 'Y', func() { chatview.SetTitle(" yash16 ") }).
 		AddItem("Kavin Charles", "kavincharles", 'K', func() { chatview.SetTitle(" kavincharles ") })
 	friendList.SetBorder(true).SetTitle(" Friend List ")
+	requestlist := tview.NewList()
+	requestlist.SetTitle("Requests")
 	page.
 		AddItem(friendList, 0, 2, true).
 		AddItem(chatLayout, 0, 8, true)
