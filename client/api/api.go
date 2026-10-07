@@ -52,3 +52,57 @@ func Register(request models.RegisterModel) int {
 	return statuscode
 
 }
+
+func GetFriends() map[string]string {
+	data := struct{ Name string }{utils.GetCurrentUser().Username}
+	readerData, er := json.Marshal(data)
+	if er != nil {
+		fmt.Println(er)
+	}
+	reader := bytes.NewReader(readerData)
+	response, err := http.Post("http://localhost:3000/friend-list", "application/json", reader)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	defer response.Body.Close()
+	var output struct{ Items map[string]string }
+	err = json.NewDecoder(response.Body).Decode(&output)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+
+	}
+	for k, v := range output.Items {
+		fmt.Println(k, v)
+	}
+	return output.Items
+}
+func GetFriendReqs() []string {
+	data := struct{ Name string }{utils.GetCurrentUser().Username}
+	readerData, er := json.Marshal(data)
+	reader := bytes.NewReader(readerData)
+
+	if er != nil {
+		fmt.Println(er)
+	}
+	response, err := http.Post("http://localhost:3000/get-friend-reqs", "application/json", reader)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer response.Body.Close()
+	var output struct{ Items []string }
+	err = json.NewDecoder(response.Body).Decode(&output)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for k, v := range output.Items {
+		fmt.Println("k", k, v)
+	}
+	return output.Items
+
+}
+
+func AddFriend() {
+
+}

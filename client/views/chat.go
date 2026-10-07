@@ -2,6 +2,7 @@ package views
 
 import (
 	"fmt"
+	"tcom/api"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -41,14 +42,27 @@ func GetChatPage() *tview.Flex {
 		AddItem(chatview, 0, 1, true).
 		AddItem(messagebar, 1, 1, true).
 		SetDirection(tview.FlexRow)
-	friendList := tview.NewList().
-		AddItem("Yashwanth", "yash16", 'Y', func() { chatview.SetTitle(" yash16 ") }).
-		AddItem("Kavin Charles", "kavincharles", 'K', func() { chatview.SetTitle(" kavincharles ") })
-	friendList.SetBorder(true).SetTitle(" Friend List ")
-	requestlist := tview.NewList()
-	requestlist.SetTitle("Requests")
+	friendListview := tview.NewList()
+	//	AddItem("Yashwanth", "yash16", 'Y', func() { chatview.SetTitle(" yash16 ") }).
+	friendlist := api.GetFriends()
+	for u, d := range friendlist {
+		friendListview.AddItem(d, u, 'o', func() { chatview.SetTitle(d) })
+	}
+	friendListview.SetBorder(true).SetTitle(" Friend List ")
+	requestlistview := tview.NewList()
+	requestlist := api.GetFriendReqs()
+	for _, d := range requestlist {
+		requestlistview.AddItem(d, "", 'o', func() { chatview.SetTitle(d) })
+	}
+
+	requestlistview.SetBorder(true).SetTitle(" Requests ")
+
+	friendCol := tview.NewFlex().SetDirection(tview.FlexRow).
+		AddItem(friendListview, 0, 1, true).
+		AddItem(requestlistview, 0, 1, true)
+
 	page.
-		AddItem(friendList, 0, 2, true).
+		AddItem(friendCol, 0, 2, true).
 		AddItem(chatLayout, 0, 8, true)
 	return page
 
