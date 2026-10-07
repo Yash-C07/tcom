@@ -16,7 +16,7 @@ func main() {
 	app := tview.NewApplication()
 	app.EnableMouse(true)
 	pages := tview.NewPages()
-	pages.AddPage("chat", views.GetChatPage(), true, true)
+
 	pages.AddPage("auth", views.GetAuthPage(pages), true, false)
 	if !isLoggedin {
 		pages.SwitchToPage("auth")

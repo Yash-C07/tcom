@@ -73,9 +73,6 @@ func GetFriends() map[string]string {
 		return nil
 
 	}
-	for k, v := range output.Items {
-		fmt.Println(k, v)
-	}
 	return output.Items
 }
 func GetFriendReqs() []string {
@@ -95,9 +92,6 @@ func GetFriendReqs() []string {
 	err = json.NewDecoder(response.Body).Decode(&output)
 	if err != nil {
 		fmt.Println(err)
-	}
-	for k, v := range output.Items {
-		fmt.Println("k", k, v)
 	}
 	return output.Items
 

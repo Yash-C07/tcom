@@ -1,10 +1,9 @@
 package views
 
 import (
+	"net/http"
 	"tcom/api"
 	"tcom/models"
-
-	"net/http"
 
 	"github.com/rivo/tview"
 )
@@ -39,7 +38,7 @@ func GetAuthPage(pages *tview.Pages) *tview.Flex {
 
 			statuscode := api.Login(loginReq)
 			if statuscode == http.StatusOK {
-
+				pages.AddPage("chat", GetChatPage(), true, true)
 				pages.SwitchToPage("chat")
 			}
 		})
