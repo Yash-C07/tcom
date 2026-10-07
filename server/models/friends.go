@@ -7,5 +7,8 @@ type FriendReqModel struct {
 }
 
 type AllFriends struct {
+	Items map[string]string
+}
+type AllFriendReq struct {
 	Items []string
 }

@@ -69,13 +69,14 @@ func RemoveFriend(writer http.ResponseWriter, req *http.Request) {
 func GetFriends(writer http.ResponseWriter, req *http.Request) {
 
 	Conn := db.GetConn()
-	if req.Method != http.MethodGet {
+	if req.Method != http.MethodPost {
 		return
 	}
+
 	var modelType struct {
 		Name string
 	}
-
+	defer req.Body.Close()
 	err := json.NewDecoder(req.Body).Decode(&modelType)
 	model := modelType.Name
 	if err != nil {
@@ -83,16 +84,19 @@ func GetFriends(writer http.ResponseWriter, req *http.Request) {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	defer req.Body.Close()
 
 	rows, err := Conn.Query(context.Background(),
-		`SELECT CASE 
-		WHEN sender = $1 THEN reciever
-        	ELSE sender
-    	END AS friend_id
-		FROM public.friend_reqs
-		WHERE (sender = $1 OR reciever = $1) 
-	  	AND status = 'a';`, model)
+		`SELECT 
+    u.username,
+    u.displayname
+FROM public.friend_reqs fr
+JOIN public.users u 
+  ON u.username = CASE 
+               WHEN fr.sender = $1 THEN fr.reciever
+               ELSE fr.sender
+           END
+WHERE (fr.sender = $1 OR fr.reciever = $1) 
+   AND fr.status = 'a';   `, model)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -100,17 +104,17 @@ func GetFriends(writer http.ResponseWriter, req *http.Request) {
 	defer rows.Close()
 
 	var friends models.AllFriends
-	var friendsList []string
+	friendsList := make(map[string]string)
 	for rows.Next() {
-		var f string
-		err := rows.Scan(&f)
+		var u, d string
+		err := rows.Scan(&u, &d)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-
-		friendsList = append(friendsList, f)
+		friendsList[u] = d
 	}
+
 	friends.Items = friendsList
 
 	if err != nil {
@@ -132,7 +136,7 @@ func GetFriends(writer http.ResponseWriter, req *http.Request) {
 func GetFriendReqs(writer http.ResponseWriter, req *http.Request) {
 
 	Conn := db.GetConn()
-	if req.Method != http.MethodGet {
+	if req.Method != http.MethodPost {
 		return
 	}
 	var modelType struct {
@@ -158,8 +162,8 @@ func GetFriendReqs(writer http.ResponseWriter, req *http.Request) {
 	}
 	defer rows.Close()
 
-	var friends models.AllFriends
-	var requestlist []string
+	var friends models.AllFriendReq
+	requestlist := make([]string, 0)
 	for rows.Next() {
 		var f string
 		err := rows.Scan(&f)
@@ -184,8 +188,8 @@ func GetFriendReqs(writer http.ResponseWriter, req *http.Request) {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	writer.Write(by)
 	writer.WriteHeader(http.StatusOK)
+	writer.Write(by)
 }
 
 func AcceptFriendReq(writer http.ResponseWriter, req *http.Request) {
